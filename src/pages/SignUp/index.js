@@ -8,6 +8,13 @@ export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    function handleSubmit(e){
+        e.preventDefault();
+        if(name !== '' && email !== '' && password !== ''){
+            alert("Fazer cadastro")
+        }
+    }   
+
     return (
         <div className='container-center'>
             <div className='login'>
