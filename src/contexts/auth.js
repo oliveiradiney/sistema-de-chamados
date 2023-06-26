@@ -51,9 +51,6 @@ function AuthProvider({ children }) {
 
                         navigate("/dashboard");
 
-
-                      
-
                     })
 
 
