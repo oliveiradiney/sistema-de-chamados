@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect} from 'react';
+import React, { useState, useContext} from 'react';
 import './signin.css';
 import logo from '../../assets/logo.png';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,7 @@ export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const { signIn } = useContext(AuthContext)
+    const { signIn, loadingAuth } = useContext(AuthContext)
 
     function handleSignIn(e){
         e.preventDefault();
@@ -41,7 +41,9 @@ export default function SignIn() {
 
                     />
 
-                    <button type='submit'>Acessar</button>
+                    <button type='submit'>
+                        {loadingAuth ? "Carregando..." : "Acessar"}
+                    </button>
                 </form>
 
                 <Link to="/register">Criar uma conta</Link>
