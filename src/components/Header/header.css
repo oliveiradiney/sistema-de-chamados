@@ -1,4 +1,5 @@
 .sidebar{
+    width: 200px;
     margin: 0;
     padding: 0;
     background-color: #181c2e;
@@ -15,6 +16,10 @@
     background-size: cover;
     height: 150px;
 }
+
+.sidebar div{
+    padding-top: 30px;
+  }
 
 .sidebar div img{
     width: 90px;
@@ -88,5 +93,4 @@
     .sidebar a svg{
         display: none;
     }
-
 }
