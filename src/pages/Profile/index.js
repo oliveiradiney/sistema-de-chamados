@@ -7,10 +7,15 @@ import avatar from "../../assets/avatar.png";
 import { AuthContext } from "../../contexts/auth";
 import { useContext, useState } from "react";
 
+import { db, storage } from "../../services/firebaseConnection";
+import {doc, updateDoc} from 'firebase/firestore';
+
+import { toast } from 'react-toastify';
+
 import "./profile.css";
 
 export default function Profile() {
-  const { user, logout } = useContext(AuthContext);
+  const { user, storageUser, setUser, logout } = useContext(AuthContext);
 
   const [avatarUrl, setAvatarUrl] = useState(user && user.avatarUrl);
   const [imageAvatar, setImageAvatar] = useState(null);
@@ -33,6 +38,28 @@ export default function Profile() {
     }
   }
 
+  async function handleSubmit(e){
+    e.preventDefault();
+    
+    if(imageAvatar === null && nome !== ''){
+      //Atualizar apenas o nome do user
+      const docRef = doc(db, "users", user.uid)
+      await updateDoc(docRef, {
+        nome: nome,
+      })
+      .then(() => {
+        let data = {
+          ...user,
+          nome: nome,
+        }
+        
+        setUser(data);
+        storageUser(data);
+        toast.success("Atualizado com sucesso!")
+      })
+    }
+  }
+
   return (
     <div>
       <Header />
@@ -43,7 +70,7 @@ export default function Profile() {
         </Title>
 
         <div className="container">
-          <form className="form-profile">
+          <form className="form-profile" onSubmit={handleSubmit}>
             <label className="label-avatar">
               <span>
                 <FiUpload color="#FFF" size={25} />
