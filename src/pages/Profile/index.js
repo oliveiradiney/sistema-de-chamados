@@ -9,6 +9,7 @@ import { useContext, useState } from "react";
 
 import { db, storage } from "../../services/firebaseConnection";
 import {doc, updateDoc} from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import { toast } from 'react-toastify';
 
@@ -38,6 +39,37 @@ export default function Profile() {
     }
   }
 
+  async function handleUpload(){
+    const currentUid = user.uid;
+
+    const uploadRef = ref(storage, `images/${currentUid}/${imageAvatar.name}`);
+
+    const uploadTask = uploadBytes(uploadRef, imageAvatar)
+    .then((snapshot) => {
+      getDownloadURL(snapshot.ref).then(async (downloadURL) => {
+
+        let urlFoto = downloadURL;
+
+        const docRef = doc(db, "users", user.uid);
+        await updateDoc(docRef, {
+          avatarUrl: urlFoto,
+          nome: nome,
+        })
+        .then(() => {
+            let data = {
+              ...user,
+              nome: nome,
+              avatarUrl: urlFoto,
+            }
+
+            setUser(data);
+            storageUser(data);
+            toast.success("Atualizado com sucesso!")
+        })
+      })
+    })
+  }
+
   async function handleSubmit(e){
     e.preventDefault();
     
@@ -57,6 +89,9 @@ export default function Profile() {
         storageUser(data);
         toast.success("Atualizado com sucesso!")
       })
+    } else if(nome !== '' && imageAvatar !== null){
+      //Atualizar o nome e a foto
+      handleUpload();
     }
   }
 
