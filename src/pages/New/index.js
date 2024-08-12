@@ -5,7 +5,8 @@ import './new.css'
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/auth";
 import { db } from "../../services/firebaseConnection";
-import { collection, getDoc, getDocs, doc } from "firebase/firestore";
+import { collection, getDoc, getDocs, doc, addDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 
 const listRef = collection(db, 'customers')
@@ -66,6 +67,30 @@ export default function New() {
     setCustomerSelected(e.target.value)
   }
 
+  async function handleRegister(e) {
+    e.preventDefault()
+
+    //Registrar um chamado
+    await addDoc(collection(db, "chamados"), {
+      created: new Date(),
+      cliente: customers[customerSelected].nomeFantasia,
+      clienteId: customers[customerSelected].id,
+      assunto: assunto,
+      complemento: complemento,
+      status: status,
+      userId: user.uid
+    })
+      .then(() => {
+        toast.success("Chamado registrado!")
+        setComplemento('')
+        setCustomerSelected(0)
+      })
+      .catch((error) => {
+        toast.error("Ops erro ao registrar, tente mais tarde!")
+        console.log(error)
+      })
+  }
+
   return (
     <div>
       <Header />
@@ -76,7 +101,7 @@ export default function New() {
         </Title>
 
         <div className="container">
-          <form className="form-profile">
+          <form className="form-profile" onSubmit={handleRegister}>
             <label>Clientes</label>
             {
               loadCustomer ? (
